@@ -6,9 +6,14 @@ const loadMore = document.querySelector('.load-more');
 
 const main = () => {
   const addImageStubsToPage = (numberOfImages = 50) => {
-    const pageContent = getPageContent(numberOfImages);
+    const images = getPageContent(numberOfImages);
 
-    grid.innerHTML += pageContent;
+    const pageContent = document.createDocumentFragment();
+    images.forEach((image) => {
+      pageContent.appendChild(image);
+    });
+
+    grid.appendChild(pageContent);
 
     intersectionObserver();
   };

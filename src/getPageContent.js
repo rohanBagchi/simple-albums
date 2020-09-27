@@ -21,16 +21,20 @@ export const getPageContent = (numberOfImages) => {
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < numberOfImages; i++) {
     const { url, name, key } = getCurrentImageType(i);
-    const image = `
-    <div class="grid-item">
-      <img data-api="${url}" data-name="${name}" data-key="${key}" class="lazy" />
-    </div>
-    `;
 
-    images.push(image);
+    const div = document.createElement('div');
+    div.classList.add('grid-item');
+    const img = document.createElement('img');
+    img.classList.add('lazy');
+    img.setAttribute('data-api', url);
+    img.setAttribute('data-name', name);
+    img.setAttribute('data-key', key);
+    div.appendChild(img);
+
+    images.push(div);
   }
 
-  return images.join('');
+  return images;
 };
 
 const getImageURL = async (sourceAPIURL) => {

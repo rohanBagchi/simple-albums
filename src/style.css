@@ -5,6 +5,11 @@
 
 .grid-item {
   width: 200px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #d8d8d8;
+  border-radius: 5px;
+  margin: 2px;
 }
 .grid-item--width2 {
   width: 400px;

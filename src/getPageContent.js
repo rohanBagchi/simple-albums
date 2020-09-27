@@ -40,7 +40,23 @@ const getImageURL = async (sourceAPIURL) => {
   return imageData;
 };
 
+const removeImage = (imageElement, observer) => {
+  if (!imageElement || !observer) return;
+
+  observer.unobserve(imageElement);
+  const imageWrapper = imageElement.parentElement;
+  imageElement.remove();
+  imageWrapper.remove();
+};
+
 const allowedExtensions = ['jpg', 'jpeg', 'svg', 'png', 'webp'];
+
+const renderedImages = {};
+const isDuplicate = (src) => !!renderedImages[src];
+const isNotAllowedImageType = (src) => {
+  const fileExtension = src.split('.').pop();
+  return !allowedExtensions.includes(fileExtension.toLowerCase());
+};
 
 const handleImageAppearInView = (imageElements, observer) => {
   imageElements.forEach(async (imageElementWrapper) => {
@@ -51,31 +67,37 @@ const handleImageAppearInView = (imageElements, observer) => {
       try {
         const imageData = await getImageURL(src);
         if (!imageData) {
+          removeImage(imageElement, observer);
           return;
         }
         const imageSrc = imageData[key];
 
         if (!imageSrc) return;
 
-        const fileExtension = imageSrc.split('.').pop();
-        if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
-          observer.unobserve(imageElement);
+        if (isDuplicate(imageSrc) || isNotAllowedImageType(imageSrc)) {
+          removeImage(imageElement, observer);
           return;
         }
+
         imageElement.src = imageSrc;
         imageElement.alt = name;
-        imageElement.style.height = 'auto';
 
-        // renderedImage[imageSrc] = 1;
+        // recording image source for unique check
+        renderedImages[imageSrc] = 1;
+
         imageElement.classList.remove('lazy');
-        imageElement.removeAttribute('data-src');
+
+        imageElement.onload = () => {
+          imageElement.removeAttribute('data-api');
+        };
+
         imageElement.removeAttribute('data-key');
         imageElement.removeAttribute('data-name');
 
         observer.unobserve(imageElement);
       } catch (e) {
         console.error(e);
-        // removeImage(imageElement, observer);
+        removeImage(imageElement, observer);
       }
     }
   });

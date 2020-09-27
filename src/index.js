@@ -1,11 +1,11 @@
-import './style.css';
+import './style.less';
 import { getPageContent, intersectionObserver } from './getPageContent';
 
 const grid = document.querySelector('.grid');
 const loadMore = document.querySelector('.load-more');
 
 const main = () => {
-  const addImageStubsToPage = (numberOfImages = 50) => {
+  const addImageStubsToPage = (numberOfImages = 500) => {
     const images = getPageContent(numberOfImages);
 
     const pageContent = document.createDocumentFragment();

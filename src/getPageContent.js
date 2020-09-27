@@ -29,6 +29,7 @@ export const getPageContent = (numberOfImages) => {
     img.setAttribute('data-api', url);
     img.setAttribute('data-name', name);
     img.setAttribute('data-key', key);
+
     div.appendChild(img);
 
     images.push(div);
@@ -86,13 +87,21 @@ const handleImageAppearInView = (imageElements, observer) => {
         imageElement.src = imageSrc;
         imageElement.alt = name;
 
+        const infoOverlay = document.createElement('div');
+        infoOverlay.classList.add('info-overlay');
+        infoOverlay.textContent = name.toUpperCase();
+
+        imageElement.parentElement.appendChild(infoOverlay);
+
         // recording image source for unique check
         renderedImages[imageSrc] = 1;
 
         imageElement.classList.remove('lazy');
 
         imageElement.onload = () => {
+          // this is to have fade in effect after image load is complete
           imageElement.removeAttribute('data-api');
+          imageElement.parentElement.classList.add('loaded');
         };
 
         imageElement.removeAttribute('data-key');
